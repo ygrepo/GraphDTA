@@ -84,7 +84,7 @@ set +e
   --log_level "${LOG_LEVEL}" \
   --data_fn "${DATA_FN}" \
   --output_dir "${OUTPUT_DIR}" \
-  --dataset_name "${DATASET_NAME}" \
+  --dataset_name "${DATASET_NAME}" 
 exit_code=$?
 set -e
 

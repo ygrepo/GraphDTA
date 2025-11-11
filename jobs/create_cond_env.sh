@@ -33,13 +33,6 @@ fi
 
 # --- Activate env ---
 conda activate "${ENV_PREFIX}"
-
-# --- Install All Packages (The Correct Conda Way) ---
-#
-# We install everything in ONE command from the correct channels.
-#
-# **CRITICAL CHANGE**: We are using 'pytorch-cuda=11.8'
-# to match your system's NVIDIA DRIVER version.
 #
 conda install -y \
   -c pyg \

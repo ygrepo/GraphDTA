@@ -1,10 +1,14 @@
 import os
+import sys
+from pathlib import Path
+
 import numpy as np
 from math import sqrt
 from scipy import stats
 import logging
 from torch_geometric.data import InMemoryDataset, DataLoader
 from torch_geometric import data as DATA
+import pandas as pd
 import torch
 
 
@@ -76,14 +80,14 @@ class TestbedDataset(InMemoryDataset):
         # benchmark dataset, default = 'davis'
         self.dataset = dataset
         if os.path.isfile(self.processed_paths[0]):
-            print(
+            logger.info(
                 "Pre-processed data found: {}, loading ...".format(
                     self.processed_paths[0]
                 )
             )
             self.data, self.slices = torch.load(self.processed_paths[0])
         else:
-            print(
+            logger.info(
                 "Pre-processed data {} not found, doing pre-processing...".format(
                     self.processed_paths[0]
                 )
@@ -123,7 +127,7 @@ class TestbedDataset(InMemoryDataset):
         data_list = []
         data_len = len(xd)
         for i in range(data_len):
-            print("Converting SMILES to graph: {}/{}".format(i + 1, data_len))
+            logger.info(f"Converting SMILES to graph: {i+1}/{data_len}")
             smiles = xd[i]
             target = xt[i]
             labels = y[i]
@@ -145,7 +149,7 @@ class TestbedDataset(InMemoryDataset):
 
         if self.pre_transform is not None:
             data_list = [self.pre_transform(data) for data in data_list]
-        print("Graph construction done. Saving to file.")
+        logger.info("Graph construction done. Saving to file.")
         data, slices = self.collate(data_list)
         # save preprocessed data:
         torch.save((data, slices), self.processed_paths[0])
@@ -193,3 +197,31 @@ def ci(y, f):
         j = i - 1
     ci = S / z
     return ci
+
+
+def save_csv_parquet_torch(df: pd.DataFrame, fn: Path) -> None:
+    if fn.suffix == ".parquet":
+        logger.info(f"Saving to parquet: {fn}")
+        df.to_parquet(fn)
+        return
+    if fn.suffix == ".csv":
+        logger.info(f"Saving to csv: {fn}")
+        df.to_csv(fn, index=False)
+        return
+
+    if fn.suffix == ".pt":
+        logger.info(f"Saving to torch: {fn}")
+        torch.save(df, fn)
+        return
+
+    raise ValueError(f"Unsupported file format: {fn.suffix}")
+
+
+def read_csv_parquet_torch(fn: Path) -> pd.DataFrame:
+    if fn.suffix == ".parquet":
+        return pd.read_parquet(fn)
+    if fn.suffix == ".csv":
+        return pd.read_csv(fn)
+    if fn.suffix == ".pt":
+        return torch.load(fn)
+    raise ValueError(f"Unsupported file format: {fn.suffix}")

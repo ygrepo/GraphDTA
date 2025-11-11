@@ -18,23 +18,17 @@
 set -Eeuo pipefail
 trap 'ec=$?; echo "[ERROR] line ${LINENO} status ${ec}" >&2' ERR
 
-# --- Make sure a logs dir exists in the SUBMISSION directory ---
-mkdir -p ./logs
 
 # --- Resolve repo root to the SUBMISSION directory, not the script folder ---
 SUBMIT_DIR="$(pwd)"     # because -cwd is set by LSF to the submission dir (or %J_workdir)
 echo "Submit dir: ${SUBMIT_DIR}"
 
-# ---- Logging (mirror to ./logs) ----
-ts="$(date +"%Y%m%d_%H%M%S")"
-log_file="./logs/${ts}_create_data.log"
 
 echo "------------------------------------------------------------"
 echo "JOB START: $(date)"
 echo "JOBID     : ${LSB_JOBID:-local}  IDX=${LSB_JOBINDEX:-}"
 echo "HOST      : $(hostname)"
 echo "PWD       : $(pwd)"
-echo "LOG FILE  : ${log_file}"
 echo "------------------------------------------------------------"
 
 # ---- Modules / shell setup ----
@@ -70,6 +64,8 @@ OUTPUT_DIR="output/data/graph_dta"; mkdir -p "${OUTPUT_DIR}"
 MAIN="src/create_data.py"
 DATASET_NAME="All_binding_db_genes"
 ts=$(date +"%Y%m%d_%H%M%S")
+LOG_DIR="logs"
+mkdir -p "${LOG_DIR}"
 LOG_FILE="${LOG_DIR}/${ts}_${DATASET_NAME}_create_data.log"
 
 [[ -f "${MAIN}" ]] || { echo "[ERROR] MAIN not found: ${MAIN} (PWD=$(pwd))"; exit 2; }

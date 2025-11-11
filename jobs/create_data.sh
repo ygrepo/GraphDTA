@@ -59,7 +59,7 @@ PYTHON="${ENV_PREFIX}/bin/python"
 
 # ---- Project paths ----
 LOG_LEVEL="INFO"
-DATA_FN="output/metrics/20251031_all_binding_db_genes.parquet"
+DATA_FN="output/data/20251031_all_binding_db_genes.parquet"
 OUTPUT_DIR="output/data/graph_dta"; mkdir -p "${OUTPUT_DIR}"
 MAIN="src/create_data.py"
 DATASET_NAME="All_binding_db_genes"
@@ -84,6 +84,7 @@ set +e
   --log_level "${LOG_LEVEL}" \
   --data_fn "${DATA_FN}" \
   --output_dir "${OUTPUT_DIR}" \
+  --dataset_name "${DATASET_NAME}" \
 exit_code=$?
 set -e
 

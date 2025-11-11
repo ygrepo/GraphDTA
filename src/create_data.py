@@ -238,7 +238,7 @@ def parse_args():
     parser.add_argument(
         "--data_fn",
         type=Path,
-        default=Path("output/data/combined_predictions_BindingDB.parquet"),
+        default=Path("output/data/20251031_all_binding_db_genes.parquet"),
         required=True,
         help="Path to the combined predictions parquet/CSV file",
     )
@@ -247,6 +247,12 @@ def parse_args():
         type=str,
         default="output/data",
         help="Directory to save analysis results",
+    )
+    parser.add_argument(
+        "--dataset_name",
+        type=str,
+        default="All_binding_db_genes",
+        help="Name of the dataset",
     )
     parser.add_argument("--log_fn", type=str, default="logs/create_data.log")
     parser.add_argument("--log_level", type=str, default="INFO", help="Logging level")
@@ -263,12 +269,14 @@ def main():
         logger.info(f"Logging to: {args.log_fn}")
         logger.info(f"Data file: {args.data_fn}")
         data_fn = args.data_fn.resolve()
+        logger.info(f"Output directory: {args.output_dir}")
+        logger.info(f"Dataset name: {args.dataset_name}")
 
         # Load data
         df = read_csv_parquet_torch(data_fn)
         logger.info(f"Loaded {len(df)} samples")
 
-        process_data(df, "my_dataset", Path(args.output_dir))
+        process_data(df, args.dataset_name, Path(args.output_dir))
 
     except Exception as e:
         logger.exception("Script failed: %s", e)

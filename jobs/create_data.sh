@@ -4,13 +4,14 @@
 # ------- LSF resources ------
 #BSUB -J create_data
 #BSUB -P acc_DiseaseGeneCell
-#BSUB -q premium
+#BSUB -q gpu
+#BSUB -gpu "num=1"
+#BSUB -R h100nvl
 #BSUB -n 1
 #BSUB -R "rusage[mem=128G]"
 #BSUB -W 6:00
 #BSUB -o logs/create_data.%J.out
 #BSUB -e logs/create_data.%J.err
-
 
 # --------------------------------
 

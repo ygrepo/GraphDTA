@@ -68,6 +68,8 @@ DATA_FN="output/metrics/20251031_all_binding_db_genes.parquet"
 OUTPUT_DIR="output/data/graph_dta"; mkdir -p "${OUTPUT_DIR}"
 MAIN="src/create_data.py"
 DATASET_NAME="All_binding_db_genes"
+ts=$(date +"%Y%m%d_%H%M%S")
+LOG_FILE="${LOG_DIR}/${ts}_${DATASET_NAME}_create_data.log"
 
 [[ -f "${MAIN}" ]] || { echo "[ERROR] MAIN not found: ${MAIN} (PWD=$(pwd))"; exit 2; }
 
@@ -75,11 +77,13 @@ echo "Python     : $(command -v "${PYTHON}")"
 echo "Main script: ${MAIN}"
 echo "Data file  : ${DATA_FN}"
 echo "Output dir : ${OUTPUT_DIR}"
+echo "Dataset name: ${DATASET_NAME}"
+echo "Log file   : ${LOG_FILE}"
 echo "------------------------------------------------------------"
 
 set +e
 "${PYTHON}" "${MAIN}" \
-  --log_fn "${log_file}" \
+  --log_fn "${LOG_FILE}" \
   --log_level "${LOG_LEVEL}" \
   --data_fn "${DATA_FN}" \
   --output_dir "${OUTPUT_DIR}" \

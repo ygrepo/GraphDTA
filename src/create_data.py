@@ -81,7 +81,8 @@ def atom_features(atom: Chem.Atom) -> np.ndarray:
             atom.GetTotalNumHs(), [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
         )
         + one_of_k_encoding_unk(
-            atom.GetImplicitValence(), [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+            atom.GetImplicitValence(getExplicit=False),
+            [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
         )
         + [atom.GetIsAromatic()]
     )
@@ -193,39 +194,31 @@ def process_data(df: pd.DataFrame, dataset_name: str, output_dir: Path):
 
     for split_name, df_split in datasets_to_process.items():
         logger.info(f"Processing {split_name} split...")
-        processed_data_file = output_dir / f"{dataset_name}_{split_name}.pt"
 
-        if not os.path.isfile(processed_data_file):
-            logger.info(f"Preparing {processed_data_file} in PyTorch format!")
+        # Extract data from the DataFrame split
+        drugs = list(df_split["compound_iso_smiles"])
+        prots = list(df_split["target_sequence"])
+        affinities = list(df_split["affinity"])
 
-            # Extract data from the DataFrame split
-            drugs = list(df_split["compound_iso_smiles"])
-            prots = list(df_split["target_sequence"])
-            affinities = list(df_split["affinity"])
+        # Convert sequences to numerical representation
+        XT = [seq_cat(t) for t in prots]
 
-            # Convert sequences to numerical representation
-            XT = [seq_cat(t) for t in prots]
+        # Convert to numpy arrays
+        drugs_np, prots_np, affinities_np = (
+            np.asarray(drugs),
+            np.asarray(XT),
+            np.asarray(affinities),
+        )
 
-            # Convert to numpy arrays
-            drugs_np, prots_np, affinities_np = (
-                np.asarray(drugs),
-                np.asarray(XT),
-                np.asarray(affinities),
-            )
-
-            # Create the PyTorch Geometric dataset
-            TestbedDataset(
-                root=str(output_dir),
-                dataset=dataset_name + "_" + split_name,
-                xd=drugs_np,
-                xt=prots_np,
-                y=affinities_np,
-                smile_graph=smile_graph,
-            )
-
-            logger.info(f"{processed_data_file} has been created.")
-        else:
-            logger.info(f"{processed_data_file} is already created.")
+        # Create the PyTorch Geometric dataset
+        TestbedDataset(
+            root=str(output_dir),
+            dataset=dataset_name + "_" + split_name,
+            xd=drugs_np,
+            xt=prots_np,
+            y=affinities_np,
+            smile_graph=smile_graph,
+        )
 
     logger.info("\nData processing complete.")
 

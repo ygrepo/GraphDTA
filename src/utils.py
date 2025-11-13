@@ -106,7 +106,8 @@ class TestbedDataset(InMemoryDataset):
         # EITHER WAY, the file now exists. We just need to load it.
 
         logger.info(f"Loading processed data from: {self.processed_paths[0]}")
-        self.data, self.slices = torch.load(self.processed_paths[0])
+        # Tell PyTorch to load everything, not just weights
+        self.data, self.slices = torch.load(self.processed_paths[0], weights_only=False)
 
         # Clean up temp args
         del self._xd, self._xt, self._y, self._smile_graph

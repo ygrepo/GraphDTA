@@ -284,7 +284,10 @@ def main():
         if args.n > 0:
             df = df.head(args.n)
             logger.info(f"Filtered to {len(df)} samples with at least {args.n} samples")
-
+        df["Mutant"] = df["Mutant"].astype(str)
+        logger.info(f"Shape: {df.shape}")
+        df.query("Mutant == 'Mutant'", inplace=True)
+        logger.info(f"Shape: {df.shape}")
         process_data(df, args.dataset_name, Path(args.output_dir))
 
     except Exception as e:

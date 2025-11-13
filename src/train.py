@@ -248,8 +248,8 @@ def main():
 
         # Main program: iterate over different datasets
         logger.info(f"\nrunning on {model_st}_{dataset_name}")
-        processed_data_file_train = output_dir / f"{dataset_name}_train.pt"
-        processed_data_file_test = output_dir / f"{dataset_name}_test.pt"
+        processed_data_file_train = output_dir / f"processed/{dataset_name}_train.pt"
+        processed_data_file_test = output_dir / f"processed/{dataset_name}_test.pt"
 
         if not os.path.isfile(processed_data_file_train) or not os.path.isfile(
             processed_data_file_test

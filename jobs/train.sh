@@ -61,12 +61,11 @@ PYTHON="${ENV_PREFIX}/bin/python"
 LOG_LEVEL="INFO"
 DATA_FN="output/data/20251031_all_binding_db_genes.parquet"
 OUTPUT_DIR="output/data/graph_dta"; mkdir -p "${OUTPUT_DIR}"
-MAIN="src/training.py"
+MAIN="src/train.py"
 DATASET_NAME="All_binding_db_genes"
 MODEL=0
 MODEL_DIR="output/models"
 RESULT_DIR="output/results"
-CUDA_DEVICE=0
 TRAIN_BATCH_SIZE=512
 TEST_BATCH_SIZE=512
 LR=0.0005
@@ -88,7 +87,6 @@ echo "Dataset name: ${DATASET_NAME}"
 echo "Model      : ${MODEL}"
 echo "Model dir  : ${MODEL_DIR}"
 echo "Result dir : ${RESULT_DIR}"
-echo "CUDA device: ${CUDA_DEVICE}"
 echo "Train batch size: ${TRAIN_BATCH_SIZE}"
 echo "Test batch size: ${TEST_BATCH_SIZE}"
 echo "Learning rate: ${LR}"
@@ -107,7 +105,6 @@ set +e
   --model "${MODEL}" \
   --model_dir "${MODEL_DIR}" \
   --result_dir "${RESULT_DIR}" \
-  --cuda_device "${CUDA_DEVICE}" \
   --train_batch_size "${TRAIN_BATCH_SIZE}" \
   --test_batch_size "${TEST_BATCH_SIZE}" \
   --lr "${LR}" \

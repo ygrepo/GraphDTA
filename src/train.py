@@ -20,10 +20,10 @@ from src.utils import (
     rmse, mse, pearson, spearman, ci  # Import metrics here instead
 )
 
-from src.models.gat import GATNet
-from src.models.gat_gcn import GAT_GCN
-from src.models.gcn import GCNNet
-from src.models.ginconv import GINConvNet
+from models.gat import GATNet
+from models.gat_gcn import GAT_GCN
+from models.gcn import GCNNet
+from models.ginconv import GINConvNet
 
 logger = get_logger(__name__)
 
@@ -165,13 +165,6 @@ def parse_args():
         "--result_dir", type=Path, default="output/results", help="Result directory."
     )
     parser.add_argument(
-        "--cuda_device",
-        type=int,
-        default=0,
-        choices=[0, 1],
-        help="CUDA device index to use.",
-    )
-    parser.add_argument(
         "--train_batch_size", type=int, default=512, help="Training batch size."
     )
     parser.add_argument(
@@ -224,7 +217,6 @@ def main():
         elif args.model == 3:
             modeling = GCNNet
         model_st = modeling.__name__
-        cuda_name = f"cuda:{args.cuda_device}"
 
         # These are now local variables, not global constants
         train_batch_size = args.train_batch_size
@@ -235,7 +227,6 @@ def main():
         output_dir = Path(args.output_dir)
         dataset_name = args.dataset_name
 
-        logger.info(f"cuda_name: {cuda_name}")
         logger.info(f"Learning rate: {lr}")
         logger.info(f"Epochs: {num_epochs}")
         logger.info(f"Log interval: {log_interval}")
@@ -276,7 +267,7 @@ def main():
         test_loader = DataLoader(test_data, batch_size=test_batch_size, shuffle=False)
 
         # training the model
-        device = torch.device(cuda_name if torch.cuda.is_available() else "cpu")
+        device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
         model = modeling().to(device)
         loss_fn = nn.MSELoss()
         optimizer = torch.optim.Adam(model.parameters(), lr=lr)

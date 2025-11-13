@@ -4,15 +4,14 @@
 # ------- LSF resources ------
 #BSUB -J create_data
 #BSUB -P acc_DiseaseGeneCell
-#BSUB -q gpu
-#BSUB -gpu "num=1"
-#BSUB -R h100nvl
-#BSUB -n 1
-#BSUB -R "rusage[mem=128G]"
+#BSUB -J create_data
+#BSUB -P acc_DiseaseGeneCell
+#BSUB -q premium               
+#BSUB -n 1                   
+#BSUB -R "rusage[mem=128G]"   
 #BSUB -W 24:00
 #BSUB -o logs/create_data.%J.out
 #BSUB -e logs/create_data.%J.err
-
 # --------------------------------
 
 set -Eeuo pipefail
@@ -63,6 +62,7 @@ DATA_FN="output/data/20251031_all_binding_db_genes.parquet"
 OUTPUT_DIR="output/data/graph_dta"; mkdir -p "${OUTPUT_DIR}"
 MAIN="src/create_data.py"
 DATASET_NAME="All_binding_db_genes"
+N=1000
 ts=$(date +"%Y%m%d_%H%M%S")
 LOG_DIR="logs"
 mkdir -p "${LOG_DIR}"
@@ -75,6 +75,7 @@ echo "Main script: ${MAIN}"
 echo "Data file  : ${DATA_FN}"
 echo "Output dir : ${OUTPUT_DIR}"
 echo "Dataset name: ${DATASET_NAME}"
+echo "N          : ${N}"
 echo "Log file   : ${LOG_FILE}"
 echo "------------------------------------------------------------"
 
@@ -84,7 +85,8 @@ set +e
   --log_level "${LOG_LEVEL}" \
   --data_fn "${DATA_FN}" \
   --output_dir "${OUTPUT_DIR}" \
-  --dataset_name "${DATASET_NAME}" 
+  --dataset_name "${DATASET_NAME}" \
+  --n "${N}"
 exit_code=$?
 set -e
 

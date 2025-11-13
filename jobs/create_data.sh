@@ -62,7 +62,7 @@ DATA_FN="output/data/20251031_all_binding_db_genes.parquet"
 OUTPUT_DIR="output/data/graph_dta"; mkdir -p "${OUTPUT_DIR}"
 MAIN="src/create_data.py"
 DATASET_NAME="All_binding_db_genes"
-N=1000
+N=100
 ts=$(date +"%Y%m%d_%H%M%S")
 LOG_DIR="logs"
 mkdir -p "${LOG_DIR}"

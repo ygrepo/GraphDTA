@@ -1,4 +1,4 @@
-mport numpy as np
+import numpy as np
 import pandas as pd
 from pathlib import Path
 import sys, os
@@ -17,7 +17,11 @@ from src.utils import (
     setup_logging,
     get_logger,
     TestbedDataset,
-    rmse, mse, pearson, spearman, ci  # Import metrics here instead
+    rmse,
+    mse,
+    pearson,
+    spearman,
+    ci,  # Import metrics here instead
 )
 
 from models.gat import GATNet
@@ -29,8 +33,15 @@ logger = get_logger(__name__)
 
 
 # training function at each epoch
-def train(model: nn.Module, device: torch.device, train_loader: DataLoader, 
-          optimizer: torch.optim.Optimizer, epoch: int, loss_fn: nn.Module, log_interval: int):
+def train(
+    model: nn.Module,
+    device: torch.device,
+    train_loader: DataLoader,
+    optimizer: torch.optim.Optimizer,
+    epoch: int,
+    loss_fn: nn.Module,
+    log_interval: int,
+):
     """
     Runs a single training epoch.
     """
@@ -140,6 +151,7 @@ def main_loop(
                 f"best_test_ci={best_test_ci:.4f} for {model_st} on {dataset}"
             )
 
+
 def parse_args():
     """Parse command line arguments."""
     parser = argparse.ArgumentParser(
@@ -191,13 +203,14 @@ def parse_args():
         type=str,
         default="All_binding_db_genes",
         help="Name of the dataset",
-    ) 
+    )
     parser.add_argument("--log_fn", type=str, default="logs/create_data.log")
     parser.add_argument("--log_level", type=str, default="INFO", help="Logging level")
- 
+
     args = parser.parse_args()
     return args
-    
+
+
 def main():
     """
     Main function to parse arguments, set up training, and run the main loop.
@@ -249,9 +262,11 @@ def main():
         ):
             logger.info("Please run create_data.py to prepare data in PyTorch format!")
             return  # Exit the function if data is not prepared
-        
+
         dataset = args.dataset_name
-        train_data_full = TestbedDataset(root=str(output_dir), dataset=dataset + "_train")
+        train_data_full = TestbedDataset(
+            root=str(output_dir), dataset=dataset + "_train"
+        )
         test_data = TestbedDataset(root=str(output_dir), dataset=dataset + "_test")
 
         # 80/20 train/validation split
@@ -274,7 +289,9 @@ def main():
 
         model_dir = args.model_dir.resolve()
         model_file_name = model_dir / f"model_{model_st}_{dataset}.model"
-        result_file_name = args.result_dir.resolve() / f"result_{model_st}_{dataset}.csv"
+        result_file_name = (
+            args.result_dir.resolve() / f"result_{model_st}_{dataset}.csv"
+        )
 
         # Call the new main_loop function
         main_loop(

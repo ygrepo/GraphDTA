@@ -59,7 +59,6 @@ PYTHON="${ENV_PREFIX}/bin/python"
 
 # ---- Project paths ----
 LOG_LEVEL="INFO"
-DATA_FN="output/data/20251031_all_binding_db_genes.parquet"
 OUTPUT_DIR="output/data/graph_dta"; mkdir -p "${OUTPUT_DIR}"
 MAIN="src/train.py"
 DATASET_NAME="All_binding_db_genes"
@@ -81,7 +80,6 @@ LOG_FILE="${LOG_DIR}/${ts}_${DATASET_NAME}_train.log"
 
 echo "Python     : $(command -v "${PYTHON}")"
 echo "Main script: ${MAIN}"
-echo "Data file  : ${DATA_FN}"
 echo "Output dir : ${OUTPUT_DIR}"
 echo "Dataset name: ${DATASET_NAME}"
 echo "Model      : ${MODEL}"
@@ -99,7 +97,6 @@ set +e
 "${PYTHON}" "${MAIN}" \
   --log_fn "${LOG_FILE}" \
   --log_level "${LOG_LEVEL}" \
-  --data_fn "${DATA_FN}" \
   --output_dir "${OUTPUT_DIR}" \
   --dataset_name "${DATASET_NAME}" \
   --model "${MODEL}" \

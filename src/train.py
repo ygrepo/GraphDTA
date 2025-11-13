@@ -158,12 +158,6 @@ def parse_args():
         description="Train GNN models for drug-target affinity prediction."
     )
     parser.add_argument(
-        "--dataset_name",
-        type=str,
-        default="All_binding_db_genes",
-        help="Name of the dataset",
-    )
-    parser.add_argument(
         "--model",
         type=int,
         default=0,

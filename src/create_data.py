@@ -249,6 +249,12 @@ def parse_args():
         help="Directory to save analysis results",
     )
     parser.add_argument(
+        "--n",
+        type=int,
+        default=0,
+        help="Minimum number of samples per target to include in the dataset",
+    )
+    parser.add_argument(
         "--dataset_name",
         type=str,
         default="All_binding_db_genes",
@@ -275,6 +281,9 @@ def main():
         # Load data
         df = read_csv_parquet_torch(data_fn)
         logger.info(f"Loaded {len(df)} samples")
+        if args.n > 0:
+            df = df.head(args.n)
+            logger.info(f"Filtered to {len(df)} samples with at least {args.n} samples")
 
         process_data(df, args.dataset_name, Path(args.output_dir))
 

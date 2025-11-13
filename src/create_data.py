@@ -81,7 +81,7 @@ def atom_features(atom: Chem.Atom) -> np.ndarray:
             atom.GetTotalNumHs(), [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
         )
         + one_of_k_encoding_unk(
-            atom.GetValence(getExplicit=False),
+            atom.GetTotalValence(),
             [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
         )
         + [atom.GetIsAromatic()]
